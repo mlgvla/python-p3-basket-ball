@@ -1,3 +1,9 @@
+from operator import ge
+import statistics
+
+
+from statistics import mean
+
 def game_dict():
     return {
         "home": {
@@ -182,3 +188,52 @@ def game_dict():
             ]
         }
     }
+
+def get_all_players():
+    home_players = game_dict()['home']['players'].copy()
+    away_players = game_dict()['away']['players'].copy()
+    return home_players + away_players
+
+def num_points_per_game(name):
+    for player in get_all_players():
+        if player["name"] == name:
+            return player["points_per_game"]
+
+def player_age(name):
+    for player in get_all_players():
+        if player["name"] == name:
+            return player["age"]
+
+def team_names():
+    locations = list(game_dict().keys())
+    return [game_dict()[location]["team_name"] for location in locations]
+
+def team_colors(name):
+    for team in game_dict():
+        if game_dict()[team]["team_name"] == name:
+            return game_dict()[team]["colors"]
+
+def player_numbers(name):
+    for team in game_dict():
+        if game_dict()[team]["team_name"] == name:
+            return [player["number"] for player in game_dict()[team]["players"]]
+
+def player_stats(name):
+    for player in get_all_players():
+        if player["name"] == name:
+            return player
+
+def average_rebounds_by_shoe_brand():
+    rebounds_by_brand = {}
+    players = get_all_players()
+    
+    for player in players:
+        brand = player["shoe_brand"]
+        if brand in rebounds_by_brand:
+            rebounds_by_brand[brand].append(player["rebounds_per_game"])
+        else:
+            rebounds_by_brand[brand] = [player["rebounds_per_game"]]
+
+    for brand in rebounds_by_brand:
+        average = mean(rebounds_by_brand[brand])
+        print(f"{brand}:  {average:.2f}")
